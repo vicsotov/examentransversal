@@ -1,0 +1,188 @@
+import datetime
+ventas = {}
+asientos = [0] * 100
+precios = {
+    'Platinum': 120000,
+    'Gold': 80000,
+    'Silver': 50000
+}
+
+
+asistentes = {}
+
+def menu():
+    print("           MENU PRINCIPAL            ")
+    print("  1. Comprar entradas concierto                 ")
+    print("  2. Mostrar ubicaciones que estan disponibles   ")
+    print("  3. Ver listado de asistentes al concierto        ")
+    print("  4. Mostrar ganancias totales          ")
+    print("  5. Salir                             ")
+    
+
+
+
+def mostrar_asientos(asientos):
+    
+    print("                  ESCENARIO               ")
+    print("\nAsientos Platinum Disponibles:")
+    for f in range(0, 20, 10):
+        for c in range(f, f + 10):
+            if asientos[c] == 0:
+                print(f"{c + 1}\t", end="")
+            else:
+                print("X\t", end="")
+        print()
+
+    print("\nAsientos Gold Disponibles:")
+    for f in range(20, 50, 10):
+        for c in range(f, f + 10):
+            if asientos[c] == 0:
+                print(f"{c + 1}\t", end="")
+            else:
+                print("X\t", end="")
+        print()
+    print("\nAsientos Silver Disponibles:")
+    for f in range(50, 100, 10):
+        for c in range(f, f + 10):
+            if asientos[c] == 0:
+                print(f"{c + 1}\t", end="")
+            else:
+                print("X\t", end="")
+        print()
+
+
+def comprarEntradas(numEntradas):
+    numero_entrada = 0
+    while numero_entrada < numEntradas:
+        mostrar_asientos(asientos)
+        try:
+            print(f"\nEntrada n° {numero_entrada+1}")
+            asiento = int(input("Ingrese el número de asiento que desea comprar para el concierto: "))
+        except ValueError:
+            print("Ingreso un caracter no valido. Intente ingresar un numero")
+            continue
+
+        if asiento < 1 or asiento > 100:
+            print("Asiento incorrecto")
+            continue
+
+        else:
+
+            if asientos[asiento-1] == 0:
+
+                try:
+                    rut = int(input("Ingrese el rut del asistente (sin puntos ni guion ): "))
+                except ValueError:
+                    print("Ingrese valor numerico")
+                    continue
+
+
+                asientos[asiento-1] = 1
+
+                if asiento > 50:
+                    precio = precios['Silver']
+
+                elif asiento > 20:
+                    precio = precios['Gold']
+
+                else:
+                    precio = precios['Platinum']
+
+
+                asistentes[asiento] =  rut
+
+
+                print(f"Asiento {asiento} comprado existosamente . Precio: ${precio}")
+                numero_entrada += 1
+            else:
+                print("No está disponible")
+
+            mostrar_asientos(asientos)
+
+
+
+
+
+def verAsistentes():
+    sorted(asistentes)
+    print("== LISTA ASISTENTES ==\n")
+    for n in asistentes:
+        print(f"RUT: {asistentes[n]}\n")
+
+
+
+def mostrarGanancias(asientos):
+    totalPlatinium = 0
+    totalGold = 0
+    totalSilver = 0
+    numEntradasPlatinium = 0
+    numEntradasGold = 0
+    numEntradasSilver = 0
+    cont = 1
+    for c in asientos:
+        print(f"c= {c} | asiento = {asientos[c]}")
+        if c == 1:
+            if cont > 50:
+                totalSilver += precios['Silver']
+                numEntradasSilver +=1
+            elif cont > 20:
+                totalGold += precios['Gold']
+                numEntradasGold +=1
+            else:
+                totalPlatinium += precios['Platinum']
+                numEntradasPlatinium +=1
+
+        cont +=1
+
+    print("TIPO de ENTRADA  |  Cantidad   |  TOTAL\n\n")
+    print(f"PLATINIUM:      | {numEntradasPlatinium}\t| $ {totalPlatinium}")
+    print(f"GOLD            | {numEntradasGold}\t| $ {totalGold}")
+    print(f"SILVER          | {numEntradasSilver}\t| $ {totalSilver}")
+    print("================================================")
+    print(f"TOTAL           | {numEntradasPlatinium+numEntradasGold+numEntradasSilver} \t| $ {totalPlatinium+totalGold+totalSilver}")
+
+
+
+while True:
+    try:
+        menu()
+        opcion = int(input("Ingrese una opcion: "))
+    except ValueError:
+        print("Ingreso un caracter no valido. Intente ingresar un numero!")
+        continue
+
+    if opcion == 1:
+        try:
+            nEntradas = 0
+            while(nEntradas < 1 or nEntradas > 3 ):
+                nEntradas = int(input("Ingrese una cantidad de entradas a comprar con un (maximo de 3): "))
+        except ValueError:
+            print("Ingreso un caracter no valido. Intente ingresar un numero!")
+            continue
+
+        comprarEntradas(nEntradas)
+
+
+    elif opcion == 2:
+        mostrar_asientos(asientos)
+
+
+    elif opcion == 3:
+        if len(asistentes) == 0:
+            print("Aun no hay asistentes")
+        else:
+            verAsistentes()
+
+
+    elif opcion == 4:
+        if len(asistentes)>0:
+            mostrarGanancias(asientos)
+        else:
+            print("No hay asistentes aun!")
+    elif opcion == 5:
+        print("\nHasta luego gracias por su compra!\n")
+        print("       Sistema de Venta de Entradas      ")
+        print(f" Fecha : {datetime.date.today()}\n")
+        break
+    else:
+        print("Ingrese una opcion valida!")
